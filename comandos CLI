@@ -1,0 +1,2 @@
+
+php artisan make:migration create_cursos_table --create=cursos
