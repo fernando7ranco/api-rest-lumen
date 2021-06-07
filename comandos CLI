@@ -1,2 +1,7 @@
 
-php artisan make:migration create_cursos_table --create=cursos
+php artisan make:migration
+
+php artisan db:seed --class=AlunosTableSeeder
+php artisan db:seed --class=DisciplinasTableSeeder
+
+

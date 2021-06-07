@@ -22,7 +22,7 @@ class CursoFactory extends Factory
     public function definition()
     {
         return [
-            'nome' => $this->faker->name,
+            'nome' => $this->faker->sentence,
             'descricao' => $this->faker->sentence,
             'conteudo' => $this->faker->paragraph,
             'valor' => $this->faker->randomFloat(2,0,10)

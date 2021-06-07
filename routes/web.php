@@ -13,13 +13,18 @@
 |
 */
 
-$router->get('/', function () use ($router) {
+$router->get('/', function() use($router) {
     return 'API REST com Lumen';
 });
 
-
 $router->group(['prefix' => 'cursos'], function() use($router){
+    $router->get('/', 'CursoController@index');
+    $router->post('/create', 'CursoController@create');
 
-    $router->get('/', 'Cursos\CursoController@index');
-    
+});
+
+$router->group(['prefix' => 'alunos'], function() use($router){
+
+    $router->get('/', 'AlunoController@index');
+
 });
