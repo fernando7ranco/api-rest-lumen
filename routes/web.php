@@ -14,17 +14,18 @@
 */
 
 $router->get('/', function() use($router) {
-    return 'API REST com Lumen';
+    return 'API REST com Lumen version ' . $router->app->version();
 });
 
 $router->group(['prefix' => 'cursos'], function() use($router){
-    $router->get('/', 'CursoController@index');
-    $router->post('/create', 'CursoController@create');
+    $router->get('/', 'CursoController@index'); #lista todos os curso
+    $router->get('/show/{id:[0-9]+}', 'CursoController@show'); #mostra o curso por ID
+    $router->post('/create', 'CursoController@create'); #cria um novo curso
+    $router->put('/update/{id:[0-9]+}', 'CursoController@update'); #atualiza o curso por ID
+    $router->delete('/delete/{id:[0-9]+}', 'CursoController@delete'); #deleta o curso por ID
 
 });
 
 $router->group(['prefix' => 'alunos'], function() use($router){
-
     $router->get('/', 'AlunoController@index');
-
 });
