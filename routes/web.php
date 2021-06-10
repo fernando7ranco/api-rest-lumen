@@ -28,4 +28,8 @@ $router->group(['prefix' => 'cursos'], function() use($router){
 
 $router->group(['prefix' => 'alunos'], function() use($router){
     $router->get('/', 'AlunoController@index');
+    $router->get('/show/{id:[0-9]+}', 'AlunoController@show'); #mostra o aluno por ID
+    $router->post('/create', 'AlunoController@create'); #cria um novo aluno
+    $router->put('/update/{id:[0-9]+}', 'AlunoController@update'); #atualiza o aluno por ID
+    $router->delete('/delete/{id:[0-9]+}', 'AlunoController@delete'); #deleta o aluno por ID
 });

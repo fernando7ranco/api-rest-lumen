@@ -60,13 +60,18 @@ class AlunoController extends Controller
 
         $validator = \Validator::make($input, [
             'nome' => 'required|max:255',
-            'descricao' => 'required|max:255',
-            'conteudo' => 'required|max:255',
-            'valor' => 'required|numeric|between:0,99.99'
+            'cpf' => 'required|cpf',
+            'idade' => 'required|integer',
+            'data_nascimento' => 'required|date',
+            'matricula' => 'required|integer|min:1000|max:9999'
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
+        }
+
+        if($this->aluno->cpfJaExiste($input['cpf'])){
+            return response()->json(['error' => 'there is already a user with this cpf'], 400);
         }
 
         try{
@@ -88,9 +93,10 @@ class AlunoController extends Controller
 
         $validator = \Validator::make($input, [
             'nome' => 'max:255',
-            'descricao' => 'max:255',
-            'conteudo' => 'max:255',
-            'valor' => 'numeric|between:0,99.99'
+            'cpf' => 'cpf',
+            'idade' => 'integer',
+            'data_nascimento' => 'date',
+            'matricula' => 'integer|min:1000|max:9999'
         ]);
 
         if ($validator->fails()) {
@@ -101,6 +107,12 @@ class AlunoController extends Controller
 
         if(!$aluno) return response()->json(['error' => 'aluno not found'], 404);
 
+        if(isset($input['cpf']) and $aluno->cpf != $input['cpf']){
+            if($this->aluno->cpfJaExiste($input['cpf'])){
+                return response()->json(['error' => 'there is already a user with this cpf'], 400);
+            }
+        }
+       
         try{
             if($aluno->update($input))
                 return response()->json($aluno, 200);

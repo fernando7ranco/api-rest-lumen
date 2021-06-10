@@ -8,4 +8,9 @@ class Aluno extends Model {
 
     use HasFactory;
 
+    protected $fillable = ['nome', 'cpf', 'idade','data_nascimento','matricula'];
+
+    public function cpfJaExiste($cpf){
+        return $this->where("cpf", $cpf)->count();
+    }
 }
