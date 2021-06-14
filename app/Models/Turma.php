@@ -4,9 +4,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Disciplina extends Model {
+class Turma extends Model {
 
     use HasFactory;
 
-    protected $fillable = ['nome'];
+    protected $fillable = ['nome', 'descricao', 'periodo_inicio','periodo_terminio','disciplina_id'];
+
 }

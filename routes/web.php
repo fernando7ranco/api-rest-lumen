@@ -33,3 +33,19 @@ $router->group(['prefix' => 'alunos'], function() use($router){
     $router->put('/update/{id:[0-9]+}', 'AlunoController@update'); #atualiza o aluno por ID
     $router->delete('/delete/{id:[0-9]+}', 'AlunoController@delete'); #deleta o aluno por ID
 });
+
+$router->group(['prefix' => 'disciplinas'], function() use($router){
+    $router->get('/', 'DisciplinaController@index');
+    $router->get('/show/{id:[0-9]+}', 'DisciplinaController@show'); #mostra o disciplina por ID
+    $router->post('/create', 'DisciplinaController@create'); #cria um novo disciplina
+    $router->put('/update/{id:[0-9]+}', 'DisciplinaController@update'); #atualiza o disciplina por ID
+    $router->delete('/delete/{id:[0-9]+}', 'DisciplinaController@delete'); #deleta o disciplina por ID
+});
+
+$router->group(['prefix' => 'turmas'], function() use($router){
+    $router->get('/', 'TurmaController@index');
+    $router->get('/show/{id:[0-9]+}', 'TurmaController@show'); #mostra o Turmas por ID
+    $router->post('/create', 'TurmaController@create'); #cria um novo Turmas
+    $router->put('/update/{id:[0-9]+}', 'TurmaController@update'); #atualiza o Turmas por ID
+    $router->delete('/delete/{id:[0-9]+}', 'TurmaController@delete'); #deleta o disciplina por ID
+});
