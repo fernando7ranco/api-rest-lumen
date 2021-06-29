@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use \App\Models\AlunosCurso;
 use \App\Models\Aluno;
 use \App\Models\Cursos\Curso;
+use Illuminate\Support\Facades\Validator;
+
 
 
 class AlunoCursoController extends Controller

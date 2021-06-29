@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Repositories\AlunoRepository;
 
@@ -45,7 +46,7 @@ class AlunoController extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        $validator = \Validator::make($input, [
+        $validator = Validator::make($input, [
             'nome' => 'required|max:255',
             'cpf' => 'required|cpf',
             'idade' => 'required|integer',
@@ -75,8 +76,7 @@ class AlunoController extends Controller
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
         }
-
-        $validator = \Validator::make($input, [
+        $validator = Validator::make($input, [
             'nome' => 'max:255',
             'cpf' => 'cpf',
             'idade' => 'integer',

@@ -53,7 +53,7 @@ class AlunoRepository{
             
     }
 
-    public function delete(Int $id): boolean{
+    public function delete(Int $id){
         $this->find($id);
         $this->aluno->delete();
     }

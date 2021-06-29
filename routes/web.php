@@ -41,7 +41,7 @@ $router->group(['prefix' => 'alunos'], function() use($router){
 
     $router->get('aluno/{alunoId:[0-9]+}/cursos', 'AlunoCursoController@cursosDoAluno'); #mostra o alunos por curso ID
 
-    $router->get('aluno/{alunoId:[0-9]+}/turmas', 'AlunoTurmaController@turmasDoAluno'); #mostra o alunos por curso ID
+    $router->get('aluno/{alunoId:[0-9]+}/turmas', 'AlunosTurmaController@turmasDoAluno'); #mostra o alunos por curso ID
 
 });
 
@@ -62,8 +62,8 @@ $router->group(['prefix' => 'turmas'], function() use($router){
 
 
     $router->group(['prefix' => 'turma/{turmaId:[0-9]+}/'], function() use($router){
-        $router->get('alunos', 'AlunoTurmaController@alunosDaTurma'); #mostra o alunos por curso ID
-        $router->post('alunos', 'AlunoTurmaController@inseriAlunoNaTurma'); #inseri aluno em curso
-        $router->delete('alunos/{alunoId:[0-9]+}/','AlunoTurmaController@removerAlunoDaTurma');
+        $router->get('alunos', 'AlunosTurmaController@alunosDaTurma'); #mostra o alunos por curso ID
+        $router->post('alunos', 'AlunosTurmaController@inseriAlunoNaTurma'); #inseri aluno em curso
+        $router->delete('alunos/{alunoId:[0-9]+}/','AlunosTurmaController@removerAlunoDaTurma');
     });
 });
