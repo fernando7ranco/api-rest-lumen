@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use \App\Models\Aluno;
+use App\Repositories\AlunoRepository;
 
 class AlunoController extends Controller
 {
 
-    private $aluno;
+    private $alunoRepository;
     private $request;
 
     /**
@@ -17,43 +17,30 @@ class AlunoController extends Controller
      *
      * @return void
      */
-    public function __construct(Request $request, Aluno $aluno)
+    public function __construct(Request $request, AlunoRepository $alunoRepository)
     {
         $this->request = $request;
-        $this->aluno = $aluno;
+        $this->alunoRepository = $alunoRepository;
         //
     }
 
-    private function inputJson(){
-
-        if(!$this->request->isJson()) throw new \Exception('Invalid JSON recieved, your Content-type is not aplication/json');
-            #abort(400, 'Invalid JSON recieved, your content-type is not aplication/json');
-      
-        $input = $this->request->json()->all();
-
-        if(!$input) throw new \Exception('content in body is not JSON');
-            #abort(400,'content is not JSON');
-            
-        return $input;
-    }
-
     public function index(){
-        return $this->aluno->all();
+        return $this->alunoRepository->all();
     }
 
     public function show($id){
-
-        $aluno = $this->aluno->find($id);
-        
-        if(!$aluno) return response()->json(['error' => 'aluno not found'], 404);
-
-        return response()->json($aluno);
+        try{
+            $aluno = $this->alunoRepository->find($id);
+            return response()->json($aluno);
+        }catch(\Exception $e){
+            return response()->json(['error'=> $e->getMensse], 404);
+        }       
     }
 
     public function create(){
 
         try{
-            $input = $this->inputJson();
+            $input = getRequestJSON($this->request);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
         }
@@ -70,23 +57,21 @@ class AlunoController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        if($this->aluno->cpfJaExiste($input['cpf'])){
-            return response()->json(['error' => 'there is already a user with this cpf'], 400);
-        }
-
         try{
-            $aluno = $this->aluno->create($input);
+            $aluno = $this->alunoRepository->create($input);
             return response()->json($aluno, 201);
+        }catch(\Exception $ex){ 
+            return response()->json(['error' => $ex->getMessage()], 400);
         }catch(\Illuminate\Database\QueryException $ex){ 
-            #dd($ex->getMessage()); 
             return response()->json(['error' => 'validate your request'], 500);
         }
+
     }
 
     public function update($id){
 
         try{
-            $input = $this->inputJson();
+            $input = getRequestJSON($this->request);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
         }
@@ -103,22 +88,17 @@ class AlunoController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        $aluno = $this->aluno->find($id);
-
-        if(!$aluno) return response()->json(['error' => 'aluno not found'], 404);
-
-        if(isset($input['cpf']) and $aluno->cpf != $input['cpf']){
-            if($this->aluno->cpfJaExiste($input['cpf'])){
-                return response()->json(['error' => 'there is already a user with this cpf'], 400);
-            }
-        }
+        try{
+            $this->alunoRepository->find($id);
+        }catch(\Exception $e){
+            return response()->json(['error'=> $e->getMessage()], 404);
+        }       
        
         try{
-            if($aluno->update($input))
-                return response()->json($aluno, 200);
-            
-            return response()->json(['error' => 'validate your request'], 500);
-
+            $aluno  = $this->alunoRepository->update($input);
+            return response()->json($aluno, 200);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 400);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
             return response()->json(['error' => 'validate your request'], 500);
@@ -126,13 +106,10 @@ class AlunoController extends Controller
     }
 
     public function delete($id){
-        
-        $aluno = $this->aluno->find($id);
-
-        if(!$aluno)
-            return response()->json(['error' => 'aluno not found'], 404);
-        
-        $aluno->delete();
+        try{
+            $this->alunoRepository->delete($id);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
     }
-    //
 }
