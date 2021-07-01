@@ -2,66 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-
-use App\Repositories\AlunosTurmaRepository;
+use App\Repositories\AlunosCursoRepository;
 
 use Exception;
 
-class AlunosTurmaController extends Controller
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+class AlunosCursoController extends Controller
 {
 
+    private $alunosCursoRepository;
     private $request;
-    private $alunosTurmaRepository;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(Request $request, AlunosTurmaRepository $alunosTurmaRepository)
+    public function __construct(Request $request, alunosCursoRepository $alunosCursoRepository)
     {
         $this->request = $request;
-        $this->alunosTurmaRepository = $alunosTurmaRepository;
+        $this->alunosCursoRepository = $alunosCursoRepository;
         //
     }
 
     public function index(){
-        return $this->alunosTurma->all();
+        return $this->alunosCursoRepository->all();
     }
 
-    public function alunosDaTurma($turmaId){
+    public function alunosDoCurso($cursoId){
 
         try{
-            $alunosTurma = $this->alunosTurmaRepository->alunosDaTurma($turmaId);
+            $alunosCurso = $this->alunosCursoRepository->alunosDoCurso($cursoId);
         }catch(Exception $e){
             return response()->json(['error' => $e->getMessage()], 404);
         }
-    
-        return response()->json($alunosTurma);
+
+        return response()->json($alunosCurso);
     }
 
-    public function turmasDoAluno($alunoId){
+    public function cursosDoAluno($alunoId){
 
         try{
-            $alunosTurma = $this->alunosTurmaRepository->turmasDoAluno($alunoId);
+            $alunosCurso = $this->alunosCursoRepository->cursosDoAluno($alunoId);
         }catch(Exception $e){
             return response()->json(['error' => $e->getMessage()], 404);
         }
-    
-        return response()->json($alunosTurma);
+
+        return response()->json($alunosCurso);
     }    
 
-    public function inseriAlunoNaTurma($turmaId){
+    public function inseriAlunoNoCurso($cursoId){
 
         try{
             $input = getRequestJSON($this->request);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
         }
-
-        $input['turma_id'] = $turmaId;
+        
+        $input['curso_id'] = $cursoId;
 
         $validator = Validator::make($input, [
             'aluno_id' => 'required|integer'          
@@ -70,11 +70,11 @@ class AlunosTurmaController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
-        
+  
         try{
-            $alunosTurma = $this->alunosTurmaRepository->inseriAlunoNaTurma($input);
-            return response()->json($alunosTurma, 201);
-        }catch(\Exception $e){
+            $alunosCurso = $this->alunosCursoRepository->inseriAlunoNoCurso($input);
+            return response()->json($alunosCurso, 201);
+        }catch(Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
@@ -82,14 +82,16 @@ class AlunosTurmaController extends Controller
         }
     }
 
-    public function removerAlunoDaTurma($turmaId, $alunoId){
+    public function removerAlunoDoCurso($cursoId, $alunoId){
+
         try{
-            $this->alunosTurmaRepository->removerAlunoDaTurma($turmaId, $alunoId);
+            $alunosCurso = $this->alunosCursoRepository->removerAlunoDoCurso($cursoId, $alunoId);
         }catch(Exception $e){
-            return response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 400);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
             return response()->json(['error' => 'validate your request'], 500);
         }
+
     }
 }

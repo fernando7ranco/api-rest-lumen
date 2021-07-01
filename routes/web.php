@@ -25,9 +25,9 @@ $router->group(['prefix' => 'cursos'], function() use($router){
     $router->delete('/delete/{id:[0-9]+}', 'CursoController@delete'); #deleta o curso por ID
 
     $router->group(['prefix' => 'curso/{cursoId:[0-9]+}/'], function() use($router){
-        $router->get('alunos', 'AlunoCursoController@alunosDoCurso'); #mostra o alunos por curso ID
-        $router->post('alunos', 'AlunoCursoController@inseriAlunoNoCurso'); #inseri aluno em curso
-        $router->delete('alunos/{alunoId:[0-9]+}/','AlunoCursoController@removerAlunoDoCurso');
+        $router->get('alunos', 'AlunosCursoController@alunosDoCurso'); #mostra o alunos por curso ID
+        $router->post('alunos', 'AlunosCursoController@inseriAlunoNoCurso'); #inseri aluno em curso
+        $router->delete('alunos/{alunoId:[0-9]+}/','AlunosCursoController@removerAlunoDoCurso');
     });
     
 });
@@ -39,7 +39,7 @@ $router->group(['prefix' => 'alunos'], function() use($router){
     $router->put('/update/{id:[0-9]+}', 'AlunoController@update'); #atualiza o aluno por ID
     $router->delete('/delete/{id:[0-9]+}', 'AlunoController@delete'); #deleta o aluno por ID
 
-    $router->get('aluno/{alunoId:[0-9]+}/cursos', 'AlunoCursoController@cursosDoAluno'); #mostra o alunos por curso ID
+    $router->get('aluno/{alunoId:[0-9]+}/cursos', 'AlunosCursoController@cursosDoAluno'); #mostra o alunos por curso ID
 
     $router->get('aluno/{alunoId:[0-9]+}/turmas', 'AlunosTurmaController@turmasDoAluno'); #mostra o alunos por curso ID
 

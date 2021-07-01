@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Exception;
 
-use \App\Models\Cursos\Curso;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+use \App\Repositories\CursoRepository;
 
 class CursoController extends Controller
 {
 
-    private $curso;
+    private $cursoRespository;
     private $request;
 
     /**
@@ -17,35 +20,24 @@ class CursoController extends Controller
      *
      * @return void
      */
-    public function __construct(Request $request, Curso $curso)
+    public function __construct(Request $request, CursoRepository $cursoRespository)
     {
         $this->request = $request;
-        $this->curso = $curso;
+        $this->cursoRespository = $cursoRespository;
         //
     }
 
-    private function inputJson(){
-
-        if(!$this->request->isJson()) throw new \Exception('Invalid JSON recieved, your Content-type is not aplication/json');
-            #abort(400, 'Invalid JSON recieved, your content-type is not aplication/json');
-      
-        $input = $this->request->json()->all();
-
-        if(!$input) throw new \Exception('content in body is not JSON');
-            #abort(400,'content is not JSON');
-            
-        return $input;
-    }
-
     public function index(){
-        return $this->curso->all();
+        return $this->cursoRespository->all();
     }
 
     public function show($id){
 
-        $curso = $this->curso->find($id);
-        
-        if(!$curso) return response()->json(['error' => 'curso not found'], 404);
+        try{
+            $curso = $this->cursoRespository->find($id);
+        }catch(Exception $e){
+            response()->json(['error' => $e->getMessage()], 404);
+        }
 
         return response()->json($curso);
     }
@@ -53,12 +45,12 @@ class CursoController extends Controller
     public function create(){
 
         try{
-            $input = $this->inputJson();
+            $input = getRequestJSON($this->request);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        $validator = \Validator::make($input, [
+        $validator = Validator::make($input, [
             'nome' => 'required|max:255',
             'descricao' => 'required|max:255',
             'conteudo' => 'required|max:255',
@@ -70,7 +62,7 @@ class CursoController extends Controller
         }
 
         try{
-            $curso = $this->curso->create($input);
+            $curso = $this->cursoRespository->create($input);
             return response()->json($curso, 201);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
@@ -81,12 +73,12 @@ class CursoController extends Controller
     public function update($id){
 
         try{
-            $input = $this->inputJson();
+            $input = getRequestJSON($this->request);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        $validator = \Validator::make($input, [
+        $validator = Validator::make($input, [
             'nome' => 'max:255',
             'descricao' => 'max:255',
             'conteudo' => 'max:255',
@@ -97,16 +89,15 @@ class CursoController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        $curso = $this->curso->find($id);
-
-        if(!$curso) return response()->json(['error' => 'curso not found'], 404);
+        try{
+            $this->cursoRespository->find($id);
+        }catch(Exception $e){
+            response()->json(['error' => $e->getMessage()], 404);
+        }
 
         try{
-            if($curso->update($input))
-                return response()->json($curso, 200);
-            
-            return response()->json(['error' => 'validate your request'], 500);
-
+            $curso = $this->cursoRespository->update($input);
+            return response()->json($curso, 200);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
             return response()->json(['error' => 'validate your request'], 500);
@@ -114,13 +105,13 @@ class CursoController extends Controller
     }
 
     public function delete($id){
-        
-        $curso = $this->curso->find($id);
 
-        if(!$curso)
-            return response()->json(['error' => 'curso not found'], 404);
-        
-        $curso->delete();
+        try{
+            $this->cursoRespository->delete($id);
+        }catch(Exception $e){
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+
     }
     //
 }

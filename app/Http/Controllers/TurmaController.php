@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-use \App\Models\Turma;
+use \App\Repositories\TurmaRepository;
 
-use \App\Models\Disciplina;
+use Exception;
 
 class TurmaController extends Controller
 {
 
-    private $turma;
+    private $turmaRepository;
     private $request;
 
     /**
@@ -19,48 +20,38 @@ class TurmaController extends Controller
      *
      * @return void
      */
-    public function __construct(Request $request, Turma $turma)
+    public function __construct(Request $request, TurmaRepository $turmaRepository)
     {
         $this->request = $request;
-        $this->turma = $turma;
+        $this->turmaRepository = $turmaRepository;
         //
     }
 
-    private function inputJson(){
-
-        if(!$this->request->isJson()) throw new \Exception('Invalid JSON recieved, your Content-type is not aplication/json');
-            #abort(400, 'Invalid JSON recieved, your content-type is not aplication/json');
-      
-        $input = $this->request->json()->all();
-
-        if(!$input) throw new \Exception('content in body is not JSON');
-            #abort(400,'content is not JSON');
-            
-        return $input;
-    }
-
     public function index(){
-        return $this->turma->all();
+        return $this->turmaRepository->all();
     }
 
     public function show($id){
 
-        $turma = $this->turma->find($id);
-        
-        if(!$turma) return response()->json(['error' => 'turma not found'], 404);
+        try{
+            $disciplina = $this->turmaRepository->find($id);
+        }catch(Exception $e){
+            response()->json(['error' => $e->getMessage()], 404);
+        }
 
-        return response()->json($turma);
+        return response()->json($disciplina);
     }
+
 
     public function create(){
 
         try{
-            $input = $this->inputJson();
+            $input = getRequestJSON($this->request);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        $validator = \Validator::make($input, [
+        $validator = Validator::make($input, [
             'nome' => 'required|max:255',
             'descricao' => 'required|max:255',
             'periodo_inicio' => 'required|date',
@@ -72,13 +63,11 @@ class TurmaController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        if(Disciplina::where('id', $input['disciplina_id'])->count() == 0){
-            return response()->json(['error' => 'disciplina id '.$input['disciplina_id'].' not found'], 400);
-        }
-        
         try{
-            $turma = $this->turma->create($input);
-            return response()->json($turma, 201);
+            $turmaRepository = $this->turmaRepository->create($input);
+            return response()->json($turmaRepository, 201);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 404);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
             return response()->json(['error' => 'validate your request'], 500);
@@ -88,12 +77,12 @@ class TurmaController extends Controller
     public function update($id){
 
         try{
-            $input = $this->inputJson();
+            $input = getRequestJSON($this->request);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        $validator = \Validator::make($input, [
+        $validator = Validator::make($input, [
             'nome' => 'max:255',
             'descricao' => 'max:255',
             'periodo_inicio' => 'date',
@@ -105,24 +94,15 @@ class TurmaController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        if(Disciplina::where('id', $input['disciplina_id'])->count() == 0){
-            return response()->json(['error' => 'disciplina id '.$input['disciplina_id'].' not found'], 400);
+        try{
+            $this->turmaRepository->find($id);
+        }catch(Exception $e){
+            response()->json(['error' => $e->getMessage()], 404);
         }
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
-
-        $turma = $this->turma->find($id);
-
-        if(!$turma) return response()->json(['error' => 'turma not found'], 404);
 
         try{
-            if($turma->update($input))
-                return response()->json($turma, 200);
-            
-            return response()->json(['error' => 'validate your request'], 500);
-
+            $disciplina = $this->turmaRepository->update($input);
+            return response()->json($disciplina, 200);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
             return response()->json(['error' => 'validate your request'], 500);
@@ -130,13 +110,13 @@ class TurmaController extends Controller
     }
 
     public function delete($id){
-        
-        $turma = $this->turma->find($id);
 
-        if(!$turma)
-            return response()->json(['error' => 'turma not found'], 404);
-        
-        $turma->delete();
+        try{
+            $this->turmaRepository->delete($id);
+        }catch(Exception $e){
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+
     }
     //
 }

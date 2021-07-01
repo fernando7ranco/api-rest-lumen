@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-use \App\Models\Disciplina;
+use \App\Repositories\DisciplinaRepository;
+
+use Exception;
 
 class DisciplinaController extends Controller
 {
 
-    private $disciplina;
+    private $disciplinaRepository;
     private $request;
 
     /**
@@ -17,35 +20,24 @@ class DisciplinaController extends Controller
      *
      * @return void
      */
-    public function __construct(Request $request, Disciplina $disciplina)
+    public function __construct(Request $request, DisciplinaRepository $disciplinaRepository)
     {
         $this->request = $request;
-        $this->disciplina = $disciplina;
+        $this->disciplinaRepository = $disciplinaRepository;
         //
     }
 
-    private function inputJson(){
-
-        if(!$this->request->isJson()) throw new \Exception('Invalid JSON recieved, your Content-type is not aplication/json');
-            #abort(400, 'Invalid JSON recieved, your content-type is not aplication/json');
-      
-        $input = $this->request->json()->all();
-
-        if(!$input) throw new \Exception('content in body is not JSON');
-            #abort(400,'content is not JSON');
-            
-        return $input;
-    }
-
     public function index(){
-        return $this->disciplina->all();
+        return $this->disciplinaRepository->all();
     }
 
     public function show($id){
 
-        $disciplina = $this->disciplina->find($id);
-        
-        if(!$disciplina) return response()->json(['error' => 'Disciplina not found'], 404);
+        try{
+            $disciplina = $this->disciplinaRepository->find($id);
+        }catch(Exception $e){
+            response()->json(['error' => $e->getMessage()], 404);
+        }
 
         return response()->json($disciplina);
     }
@@ -53,12 +45,12 @@ class DisciplinaController extends Controller
     public function create(){
 
         try{
-            $input = $this->inputJson();
+            $input = getRequestJSON($this->request);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        $validator = \Validator::make($input, [
+        $validator = Validator::make($input, [
             'nome' => 'required|max:255'
         ]);
 
@@ -67,8 +59,8 @@ class DisciplinaController extends Controller
         }
 
         try{
-            $disciplina = $this->disciplina->create($input);
-            return response()->json($disciplina, 201);
+            $disciplinaRepository = $this->disciplinaRepository->create($input);
+            return response()->json($disciplinaRepository, 201);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
             return response()->json(['error' => 'validate your request'], 500);
@@ -77,13 +69,13 @@ class DisciplinaController extends Controller
 
     public function update($id){
 
-        try{
-            $input = $this->inputJson();
+       try{
+            $input = getRequestJSON($this->request);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        $validator = \Validator::make($input, [
+        $validator = Validator::make($input, [
             'nome' => 'max:255'
         ]);
 
@@ -91,16 +83,15 @@ class DisciplinaController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        $disciplina = $this->disciplina->find($id);
-
-        if(!$disciplina) return response()->json(['error' => 'Disciplina not found'], 404);
-       
         try{
-            if($disciplina->update($input))
-                return response()->json($disciplina, 200);
-            
-            return response()->json(['error' => 'validate your request'], 500);
+            $this->disciplinaRepository->find($id);
+        }catch(Exception $e){
+            response()->json(['error' => $e->getMessage()], 404);
+        }
 
+        try{
+            $disciplina = $this->disciplinaRepository->update($input);
+            return response()->json($disciplina, 200);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
             return response()->json(['error' => 'validate your request'], 500);
@@ -108,13 +99,13 @@ class DisciplinaController extends Controller
     }
 
     public function delete($id){
-        
-        $disciplina = $this->disciplina->find($id);
 
-        if(!$disciplina)
-            return response()->json(['error' => 'Disciplina not found'], 404);
-        
-        $disciplina->delete();
+        try{
+            $this->disciplinaRepository->delete($id);
+        }catch(Exception $e){
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+
     }
     //
 }
