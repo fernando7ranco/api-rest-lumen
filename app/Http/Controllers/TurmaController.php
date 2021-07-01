@@ -42,7 +42,6 @@ class TurmaController extends Controller
         return response()->json($disciplina);
     }
 
-
     public function create(){
 
         try{
