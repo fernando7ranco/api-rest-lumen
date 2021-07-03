@@ -3,110 +3,99 @@
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
-class CursoTest extends TestCase
+class DisciplinaTest extends TestCase
 {
 
     use DatabaseTransactions;
 
     /**
-     * teste  verifca se lista todos alunos
+     * teste  verifca se lista todos disciplinas
      *
      * @return void
      */
-    public function testListarTodosCursos()
+    public function testListarTodosDisciplinas()
     {   
-        $this->verificaRotaEstaBloqueadaParaTokenErrado('GET', '/cursos');
+        $this->verificaRotaEstaBloqueadaParaTokenErrado('GET', '/disciplinas');
 
-        $this->get('/cursos', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->get('/disciplinas', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(200, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('id', $conteudoResposta[0]);
     }
     
     /**
-     * teste  verifca se encotra aluno e também se não retorna aluno
+     * teste  verifca se encontra a disciplina e também se não retorna a disciplina
      *
      * @return void
      */
-    public function testMostrarCursos()
+    public function testMostrarDisciplina()
     {   
-        $this->verificaRotaEstaBloqueadaParaTokenErrado('GET', '/cursos/show/1');
+        $this->verificaRotaEstaBloqueadaParaTokenErrado('GET', '/disciplinas/show/1');
 
-        $this->get('/cursos/show/1', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->get('/disciplinas/show/1', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(404, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('error', $conteudoResposta);
 
-        $this->get('/cursos/show/3', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->get('/disciplinas/show/3', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(200, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('id', $conteudoResposta);
     }
 
     /**
-     * teste  cria aluno com parametros validos e tenta criar sem parametros
+     * teste cria disciplina com parametros validos e tenta criar com sem parametros
      *
      * @return void
      */
 
-    public function testCriarCurso()
+    public function testCriarDisciplina()
     {
-        $this->verificaRotaEstaBloqueadaParaTokenErrado('POST', '/cursos/create');
+        $this->verificaRotaEstaBloqueadaParaTokenErrado('POST', '/disciplinas/create');
 
         $dados = array(
-                    'nome' => 'Quae a et consequatur occaecati sint rerum.',
-                    'descricao' => 'Optio sit et aliquam ullam.',
-                    'conteudo' => 'Odit autem consequatur tenetur sint. Minima id architecto ipsum quaerat. Nam molestias perferendis modi laboriosam voluptatum modi ea.',
-                    'valor' => '9.07'
+                    'nome' => 'Teste de disciplina'
                 );
-        $this->json('POST', '/cursos/create', $dados, ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+
+        $this->json('POST', '/disciplinas/create', $dados, ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(201, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('id', $conteudoResposta);
         
         $dados = array();
-        $this->json('POST', '/cursos/create', $dados, ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->json('POST', '/disciplinas/create', $dados, ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(400, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('error', $conteudoResposta);
     }
 
-    public function testEditarCurso()
+    public function testEditarDisciplina()
     {
-        $this->verificaRotaEstaBloqueadaParaTokenErrado('PUT', '/cursos/update/3');
+        $this->verificaRotaEstaBloqueadaParaTokenErrado('PUT', '/disciplinas/update/3');
 
         $dados = array(
-                    'nome' => 'teste',
-                    'descricao' => 'teste.',
-                    'conteudo' => 'teste.',
-                    'valor' => '9.07'
+                    'nome' => 'Teste de disciplina'
                 );
-        $this->json('PUT', '/cursos/update/3', $dados, ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->json('PUT', '/disciplinas/update/3', $dados, ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(200, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('id', $conteudoResposta);
 
-        $this->json('PUT', '/cursos/update/0', $dados, ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->json('PUT', '/disciplinas/update/0', $dados, ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(404, $this->response->status());
-        $conteudoResposta = $this->isJsonResponse();
-        $this->assertArrayHasKey('error', $conteudoResposta);
-        
-        $dados = array();
-        $this->json('PUT', '/cursos/update/3', $dados, ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
-        $this->assertEquals(400, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('error', $conteudoResposta);
     }
 
-    public function testDeletarCurso()
+    public function testDeletarAluno()
     {
-        $this->verificaRotaEstaBloqueadaParaTokenErrado('DELETE', '/cursos/delete/3');
+        $this->verificaRotaEstaBloqueadaParaTokenErrado('DELETE', '/disciplinas/delete/3');
 
-        $this->delete('/cursos/delete/3', [], ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->delete('/disciplinas/delete/3', [], ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(200, $this->response->status());
         $this->assertEmpty($this->response->content());
 
-        $this->delete('/cursos/delete/0', [], ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->delete('/disciplinas/delete/0', [], ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(404, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('error', $conteudoResposta);

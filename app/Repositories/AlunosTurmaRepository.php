@@ -33,7 +33,7 @@ class AlunosTurmaRepository{
 
         $alunosTurma = $this->alunosTurma->where('aluno_id', $alunoId)->get();
 
-        if(!$alunosTurma) throw new Exception('aluno not found');
+        if(!$alunosTurma->count()) throw new Exception('aluno not found');
 
         return $alunosTurma;
     }

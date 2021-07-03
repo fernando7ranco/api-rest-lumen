@@ -41,7 +41,7 @@ class TurmaRepository{
 
         $aluno = $this->turma;
 
-        if(Disciplina::where('id', $data['disciplina_id'])->count() == 0){
+        if(isset($data['disciplina_id']) && Disciplina::where('id', $data['disciplina_id'])->count() == 0){
             throw new Exception('disciplina id '.$data['disciplina_id'].' not found');
         }
        

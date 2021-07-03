@@ -34,7 +34,7 @@ class AlunoController extends Controller
             $aluno = $this->alunoRepository->find($id);
             return response()->json($aluno);
         }catch(\Exception $e){
-            return response()->json(['error'=> $e->getMensse], 404);
+            return response()->json(['error'=> $e->getMessage()], 404);
         }       
     }
 

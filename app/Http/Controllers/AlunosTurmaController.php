@@ -36,7 +36,7 @@ class AlunosTurmaController extends Controller
         try{
             $alunosTurma = $this->alunosTurmaRepository->alunosDaTurma($turmaId);
         }catch(Exception $e){
-            return response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     
         return response()->json($alunosTurma);
@@ -47,7 +47,7 @@ class AlunosTurmaController extends Controller
         try{
             $alunosTurma = $this->alunosTurmaRepository->turmasDoAluno($alunoId);
         }catch(Exception $e){
-            return response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     
         return response()->json($alunosTurma);
@@ -86,7 +86,7 @@ class AlunosTurmaController extends Controller
         try{
             $this->alunosTurmaRepository->removerAlunoDaTurma($turmaId, $alunoId);
         }catch(Exception $e){
-            return response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 400);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
             return response()->json(['error' => 'validate your request'], 500);
