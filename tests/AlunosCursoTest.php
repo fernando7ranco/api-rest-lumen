@@ -3,27 +3,26 @@
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
-class AlunosTurmaTest extends TestCase
+class AlunosCursoTest extends TestCase
 {
 
     use DatabaseTransactions;
 
     /**
-     * teste  verifca se lista todos os alunos por turma
+     * teste  verifca se lista todos alunos por curso
      *
      * @return void
      */
-    public function testListarTodosAlunosTurmas()
+    public function testListarTodosAlunosCurso()
     {   
-        $this->verificaRotaEstaBloqueadaParaTokenErrado('GET', '/turmas/turma/3/alunos');
+        $this->verificaRotaEstaBloqueadaParaTokenErrado('GET', '/cursos/curso/4/alunos');
 
-        $this->get('/turmas/turma/3/alunos', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->get('/cursos/curso/4/alunos', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(200, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('id', $conteudoResposta[0]);
 
-
-        $this->get('/turmas/turma/0/alunos', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->get('/cursos/curso/0/alunos', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(400, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('error', $conteudoResposta);
@@ -34,19 +33,19 @@ class AlunosTurmaTest extends TestCase
      *
      * @return void
      */
-    public function testListarTodasTurmasAluno()
+    public function testListarTodasCursosAluno()
     {   
-        $this->verificaRotaEstaBloqueadaParaTokenErrado('GET', '/alunos/aluno/3/turmas');
+        $this->verificaRotaEstaBloqueadaParaTokenErrado('GET', '/alunos/aluno/3/cursos');
 
-        $this->get('/alunos/aluno/0/turmas', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
-        $this->assertEquals(400, $this->response->status());
-        $conteudoResposta = $this->isJsonResponse();
-        $this->assertArrayHasKey('error', $conteudoResposta);
-
-        $this->get('/alunos/aluno/3/turmas', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->get('/alunos/aluno/3/cursos', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(200, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('id', $conteudoResposta[0]);
+
+        $this->get('/alunos/aluno/0/cursos', ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->assertEquals(400, $this->response->status());
+        $conteudoResposta = $this->isJsonResponse();
+        $this->assertArrayHasKey('error', $conteudoResposta);
     }
 
     /**
@@ -54,9 +53,9 @@ class AlunosTurmaTest extends TestCase
      *
      * @dataProvider providerInserirAluno
      */
-    public function testInserirAluno($dados, $turma, $httpCode, $key)
+    public function testInserirAluno($dados, $curso, $httpCode, $key)
     {   
-        $uri = '/turmas/turma/'.$turma.'/alunos';
+        $uri = '/cursos/curso/'.$curso.'/alunos';
 
         $this->verificaRotaEstaBloqueadaParaTokenErrado('POST', $uri);
 
@@ -70,28 +69,28 @@ class AlunosTurmaTest extends TestCase
     public function providerInserirAluno()
     {   
         return [
-            'inserirAluno'                  => ['dados' => ["aluno_id" => 4], 'turma' => 4, 'httpCode' => 201, 'key' => 'id'],
-            'inserirAlunoExistenteAluno'    => ['dados' => ["aluno_id" => 4], 'turma' => 3, 'httpCode' => 400, 'key' => 'error'],
-            'inserirAlunoInexistenteTurma'  => ['dados' => ["aluno_id" => 4], 'turma' => 0, 'httpCode' => 400, 'key' => 'error'],
-            'inserirAlunoInexistenteAluno'  => ['dados' => ["aluno_id" => 0], 'turma' => 4, 'httpCode' => 400, 'key' => 'error'],
-            'inserirAlunoSemDados'          => ['dados' => [], 'turma' => 4, 'httpCode' => 400, 'key' => 'error']
+            'inserirAluno'                  => ['dados' => ["aluno_id" => 8], 'curso' => 4, 'httpCode' => 201, 'key' => 'id'],
+            'inserirAlunoExistenteAluno'    => ['dados' => ["aluno_id" => 3], 'curso' => 8, 'httpCode' => 400, 'key' => 'error'],
+            'inserirAlunoInexistenteCurso'  => ['dados' => ["aluno_id" => 8], 'curso' => 0, 'httpCode' => 400, 'key' => 'error'],
+            'inserirAlunoInexistenteAluno'  => ['dados' => ["aluno_id" => 0], 'curso' => 4, 'httpCode' => 400, 'key' => 'error'],
+            'inserirAlunoSemDados'          => ['dados' => [], 'curso' => 4, 'httpCode' => 400, 'key' => 'error']
         ];
     }
 
-    public function testRemoverAlunoTurma()
+    public function testRemoverAlunoCurso()
     {
-        $this->verificaRotaEstaBloqueadaParaTokenErrado('DELETE', '/turmas/turma/2/alunos/2');
+        $this->verificaRotaEstaBloqueadaParaTokenErrado('DELETE', '/cursos/curso/2/alunos/2');
 
-        $this->delete('/turmas/turma/3/alunos/3', [], ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->delete('/cursos/curso/4/alunos/3', [], ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(200, $this->response->status());
         $this->assertEmpty($this->response->content());
 
-        $this->delete('/turmas/turma/3/alunos/0', [], ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->delete('/cursos/curso/4/alunos/0', [], ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(400, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('error', $conteudoResposta);
 
-        $this->delete('/turmas/turma/0/alunos/0', [], ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
+        $this->delete('/cursos/curso/0/alunos/0', [], ['Authorization' => 'Bearer ' . env('TOKEN_API')]);
         $this->assertEquals(400, $this->response->status());
         $conteudoResposta = $this->isJsonResponse();
         $this->assertArrayHasKey('error', $conteudoResposta);

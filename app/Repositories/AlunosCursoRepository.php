@@ -25,7 +25,7 @@ class AlunosCursoRepository{
 
         $alunosCurso = $this->alunosCurso->where('curso_id', $cursoId)->get();
 
-        if(!$alunosCurso) throw new Exception('Not found alunos curso id '. $cursoId);
+        if(!$alunosCurso->count()) throw new Exception('Not found alunos curso id '. $cursoId);
 
         return $alunosCurso;
     }
@@ -38,7 +38,7 @@ class AlunosCursoRepository{
 
         $alunosCurso = $this->alunosCurso->where('aluno_id', $alunoId)->get();
         
-        if(!$alunosCurso) throw new Exception('aluno not found');
+        if(!$alunosCurso->count()) throw new Exception('aluno not found');
 
         return $alunosCurso;
     } 
@@ -46,15 +46,15 @@ class AlunosCursoRepository{
     public function inseriAlunoNoCurso(array $data): AlunosCurso{
 
         if(Aluno::where('id', $data['aluno_id'])->count() == 0){
-           throw new Exception('aluno id '.$data['aluno_id'].' not found');
+            throw new Exception('aluno id '. $data['aluno_id'] .' not found');
         }
 
         if(Curso::where('id', $data['curso_id'])->count() == 0){
-           throw new Exception('curso id '.$data['curso_id'].' not found');
+            throw new Exception('curso id '.$data['curso_id'].' not found');
         }
 
         if($this->alunosCurso->where(['curso_id' => $data['curso_id'], 'aluno_id' => $data['aluno_id']])->count() > 0){
-           throw new Exception('aluno id '.$data['aluno_id'] .' has curso id '.$data['curso_id']);
+            throw new Exception('aluno id '.$data['aluno_id'] .' has curso id '.$data['curso_id']);
         }
   
         return $this->alunosCurso->create($data);
