@@ -18,8 +18,8 @@ class CreateAlunosTurmasTable extends Migration
             $table->integer('id')->autoIncrement();
             $table->integer('turma_id');
             $table->integer('aluno_id');
-            $table->foreign('turma_id')->references('id')->on('turmas');
-            $table->foreign('aluno_id')->references('id')->on('alunos');
+            $table->foreign('turma_id')->references('id')->on('turmas')->onDelete('cascade');
+            $table->foreign('aluno_id')->references('id')->on('alunos')->onDelete('cascade');
             $table->timestamps();
         });
     }

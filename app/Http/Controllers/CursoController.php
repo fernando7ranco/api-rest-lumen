@@ -36,7 +36,7 @@ class CursoController extends Controller
         try{
             $curso = $this->cursoRespository->find($id);
         }catch(Exception $e){
-            response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
 
         return response()->json($curso);
@@ -92,7 +92,7 @@ class CursoController extends Controller
         try{
             $this->cursoRespository->find($id);
         }catch(Exception $e){
-            response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
 
         try{
@@ -110,6 +110,9 @@ class CursoController extends Controller
             $this->cursoRespository->delete($id);
         }catch(Exception $e){
             return response()->json(['error' => $e->getMessage()], 404);
+        }catch(\Illuminate\Database\QueryException $ex){ 
+            #dd($ex->getMessage()); 
+            return response()->json(['error' => 'validate your request'], 500);
         }
 
     }

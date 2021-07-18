@@ -36,7 +36,7 @@ class TurmaController extends Controller
         try{
             $disciplina = $this->turmaRepository->find($id);
         }catch(Exception $e){
-            response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
 
         return response()->json($disciplina);
@@ -66,7 +66,7 @@ class TurmaController extends Controller
             $turmaRepository = $this->turmaRepository->create($input);
             return response()->json($turmaRepository, 201);
         }catch(\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 400);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
             return response()->json(['error' => 'validate your request'], 500);
@@ -96,12 +96,14 @@ class TurmaController extends Controller
         try{
             $this->turmaRepository->find($id);
         }catch(Exception $e){
-            response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
 
         try{
             $disciplina = $this->turmaRepository->update($input);
             return response()->json($disciplina, 200);
+        }catch(Exception $e){
+            return response()->json(['error' => $e->getMessage()], 400);
         }catch(\Illuminate\Database\QueryException $ex){ 
             #dd($ex->getMessage()); 
             return response()->json(['error' => 'validate your request'], 500);

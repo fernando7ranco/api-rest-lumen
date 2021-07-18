@@ -36,7 +36,7 @@ class AlunosCursoController extends Controller
         try{
             $alunosCurso = $this->alunosCursoRepository->alunosDoCurso($cursoId);
         }catch(Exception $e){
-            return response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
 
         return response()->json($alunosCurso);
@@ -47,7 +47,7 @@ class AlunosCursoController extends Controller
         try{
             $alunosCurso = $this->alunosCursoRepository->cursosDoAluno($alunoId);
         }catch(Exception $e){
-            return response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
 
         return response()->json($alunosCurso);

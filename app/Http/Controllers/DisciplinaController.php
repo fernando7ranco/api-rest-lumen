@@ -36,7 +36,7 @@ class DisciplinaController extends Controller
         try{
             $disciplina = $this->disciplinaRepository->find($id);
         }catch(Exception $e){
-            response()->json(['error' => $e->getMessage()], 404);
+           return response()->json(['error' => $e->getMessage()], 404);
         }
 
         return response()->json($disciplina);
@@ -86,7 +86,7 @@ class DisciplinaController extends Controller
         try{
             $this->disciplinaRepository->find($id);
         }catch(Exception $e){
-            response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
 
         try{

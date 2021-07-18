@@ -18,8 +18,8 @@ class CreateDisciplinasCursosTable extends Migration
             $table->integer('id')->autoIncrement();
             $table->integer('curso_id');
             $table->integer('disciplina_id');
-            $table->foreign('curso_id')->references('id')->on('cursos');
-            $table->foreign('disciplina_id')->references('id')->on('disciplinas');
+            $table->foreign('curso_id')->references('id')->on('cursos')->onDelete('cascade');
+            $table->foreign('disciplina_id')->references('id')->on('disciplinas')->onDelete('cascade');
             $table->timestamps();
         });
     }

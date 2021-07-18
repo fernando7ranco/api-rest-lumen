@@ -18,8 +18,8 @@ class CreateAlunosCursosTable extends Migration
             $table->integer('id')->autoIncrement();
             $table->integer('curso_id');
             $table->integer('aluno_id');
-            $table->foreign('curso_id')->references('id')->on('cursos');
-            $table->foreign('aluno_id')->references('id')->on('alunos');
+            $table->foreign('curso_id')->references('id')->on('cursos')->onDelete('cascade');
+            $table->foreign('aluno_id')->references('id')->on('alunos')->onDelete('cascade');
             $table->timestamps();
         });
     }

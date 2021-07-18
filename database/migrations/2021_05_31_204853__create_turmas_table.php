@@ -21,7 +21,7 @@ class CreateTurmasTable extends Migration
             $table->date('periodo_inicio');
             $table->date('periodo_terminio');
             $table->integer('disciplina_id');
-            $table->foreign('disciplina_id')->references('id')->on('disciplinas');
+            $table->foreign('disciplina_id')->references('id')->on('disciplinas')->onDelete('cascade');
             $table->timestamps();
         });
     }
