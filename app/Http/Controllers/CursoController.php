@@ -54,7 +54,7 @@ class CursoController extends Controller
             'nome' => 'required|max:255',
             'descricao' => 'required|max:255',
             'conteudo' => 'required|max:255',
-            'valor' => 'required|numeric|between:0,99.99'
+            'valor' => 'required|numeric|between:0,9999.99'
         ]);
 
         if ($validator->fails()) {
@@ -82,7 +82,7 @@ class CursoController extends Controller
             'nome' => 'max:255',
             'descricao' => 'max:255',
             'conteudo' => 'max:255',
-            'valor' => 'numeric|between:0,99.99'
+            'valor' => 'numeric|between:0,9999.99'
         ]);
 
         if ($validator->fails()) {

@@ -6,16 +6,20 @@ use App\Models\Cursos\Curso;
 
 use Exception;
 
-class CursoRepository{
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+
+class CursoRepository implements EloquentRepositoryInterface{
 
     private $curso;
 
-    public function __construct(Curso $curso){
+    public function __construct(Curso $curso)
+    {
         $this->curso = $curso;
     }
 
-    public function find(int $id): Curso{
-
+    public function find(int $id): Model
+    {
         $this->curso = $this->curso->find($id);
 
         if(!$this->curso) throw new Exception('Not found curso');
@@ -23,16 +27,18 @@ class CursoRepository{
         return $this->curso;
     }
 
-    public function all(){
+    public function all(): Collection
+    {
         return $this->curso->all();
     }
 
-    public function create(Array $data): Curso{
+    public function create(array $data): Model
+    {
         return $this->curso->create($data);
     }
 
-    public function update(Array $data): Curso{
-
+    public function update(array $data): Model
+    {
         $aluno = $this->curso;
        
         if(!$aluno->update($data))
@@ -42,9 +48,10 @@ class CursoRepository{
             
     }
 
-    public function delete(Int $id){
+    public function delete(int $id): bool
+    {
         $this->find($id);
-        $this->curso->delete();
+        return $this->curso->delete();
     }
 
 }

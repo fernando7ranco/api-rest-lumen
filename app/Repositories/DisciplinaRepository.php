@@ -6,7 +6,10 @@ use App\Models\Disciplina;
 
 use Exception;
 
-class DisciplinaRepository{
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+
+class DisciplinaRepository implements EloquentRepositoryInterface{
 
     private $disciplina;
 
@@ -14,8 +17,8 @@ class DisciplinaRepository{
         $this->disciplina = $disciplina;
     }
 
-    public function find(int $id): Disciplina{
-
+    public function find(int $id): Model
+    {
         $this->disciplina = $this->disciplina->find($id);
 
         if(!$this->disciplina) throw new Exception('Not found disciplina');
@@ -23,28 +26,30 @@ class DisciplinaRepository{
         return $this->disciplina;
     }
 
-    public function all(){
+    public function all(): Collection
+    {
         return $this->disciplina->all();
     }
 
-    public function create(Array $data): Disciplina{
+    public function create(array $data): Model
+    {
         return $this->disciplina->create($data);
     }
 
-    public function update(Array $data): disciplina{
-
+    public function update(array $data): Model
+    {
         $aluno = $this->disciplina;
        
         if(!$aluno->update($data))
             throw new Exception('update error verify your data send');
 
         return $aluno;
-            
     }
 
-    public function delete(Int $id){
+    public function delete(int $id): bool
+    {
         $this->find($id);
-        $this->disciplina->delete();
+        return $this->disciplina->delete();
     }
 
 }
