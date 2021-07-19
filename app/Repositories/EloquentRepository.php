@@ -22,9 +22,11 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
 
     public function find(int $id): Model
     {
-        $this->model = $this->model->find($id);
+        $model = $this->model->find($id);
      
-        if(!$this->model) throw new Exception('Not found '. $this->objectName() .' for id '.$id);
+        if(!$model) throw new Exception('Not found '. $this->objectName() .' for id '.$id);
+        
+        $this->model = $model;
 
         return $this->model;
     }
