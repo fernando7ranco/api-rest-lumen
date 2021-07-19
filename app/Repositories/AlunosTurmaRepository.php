@@ -7,6 +7,7 @@ use \App\Models\Aluno;
 use \App\Models\Turma;
 
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 
 class AlunosTurmaRepository{
 
@@ -14,14 +15,15 @@ class AlunosTurmaRepository{
     private $turma;
     private $alunosTurma;
 
-    public function __construct(AlunosTurma $alunosTurma, Aluno $aluno, Turma $turma){
+    public function __construct(AlunosTurma $alunosTurma, Aluno $aluno, Turma $turma)
+    {
         $this->alunosTurma = $alunosTurma;
         $this->aluno = $aluno;
         $this->turma = $turma;
     }
 
-    public function alunosDaTurma(int $turmaId){
-
+    public function alunosDaTurma(int $turmaId): Collection
+    {
        $alunosTurma = $this->alunosTurma->where('turma_id', $turmaId)->get();
 
        if(!$alunosTurma->count()) throw new Exception('alunos not found');
@@ -29,8 +31,8 @@ class AlunosTurmaRepository{
        return $alunosTurma;
     }
 
-    public function turmasDoAluno(int $alunoId){
-
+    public function turmasDoAluno(int $alunoId): Collection
+    {
         $alunosTurma = $this->alunosTurma->where('aluno_id', $alunoId)->get();
 
         if(!$alunosTurma->count()) throw new Exception('aluno not found');
@@ -38,8 +40,8 @@ class AlunosTurmaRepository{
         return $alunosTurma;
     }
 
-    public function inseriAlunoNaTurma(Array $data): AlunosTurma{
-
+    public function inseriAlunoNaTurma(Array $data): AlunosTurma
+    {
         if(Aluno::where('id', $data['aluno_id'])->count() == 0){
             throw new Exception('aluno id '.$data['aluno_id'].' not found');
         }
@@ -55,13 +57,12 @@ class AlunosTurmaRepository{
         return $this->alunosTurma->create($data);
     }
 
-    public function removerAlunoDaTurma(int $turmaId, int $alunoId){
-
+    public function removerAlunoDaTurma(int $turmaId, int $alunoId): bool
+    {
         $alunosTurma = $this->alunosTurma->where( ['turma_id' => $turmaId, 'aluno_id' => $alunoId] )->first();
 
         if(!$alunosTurma) throw new Exception('aluno id '.$alunoId .' not has turma id '.$turmaId);
         
-        $alunosTurma->delete();
+        return $alunosTurma->delete();
     }
-
 }
